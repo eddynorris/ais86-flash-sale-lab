@@ -14,6 +14,7 @@ from typing import Any
 from fastapi import Depends, Header, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import Headers, MutableHeaders
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from .config import Settings
@@ -168,8 +169,9 @@ class RateLimiter:
             return True
 
 
-class _BodyTooLarge(Exception):
-    pass
+class _BodyTooLarge(StarletteHTTPException):
+    def __init__(self) -> None:
+        super().__init__(status_code=413, detail="Request body exceeds the allowed size")
 
 
 class HardeningMiddleware:

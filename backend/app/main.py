@@ -96,6 +96,7 @@ async def http_error_handler(
         403: "FORBIDDEN",
         404: "NOT_FOUND",
         405: "METHOD_NOT_ALLOWED",
+        413: "PAYLOAD_TOO_LARGE",
         429: "RATE_LIMITED",
     }
     message = exc.detail if isinstance(exc.detail, str) else "Request failed"

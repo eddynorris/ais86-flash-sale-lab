@@ -14,7 +14,7 @@ import {
   validateCart
 } from './cart';
 import { el, icon, pulse } from './dom';
-import { formatDateTime, formatMoney, normalizeText, parseDate } from './format';
+import { formatMoney, normalizeText } from './format';
 import { buildShell, productImage } from './shell';
 import type { Elements } from './shell';
 import {
@@ -341,22 +341,7 @@ function renderHeroUnavailable(): void {
 
 function renderCampaign(): void {
   ui.campaign.classList.remove('is-ended', 'is-muted');
-  if (!catalog) {
-    ui.campaign.classList.add('is-muted');
-    ui.campaign.textContent = 'Campaña no disponible';
-    return;
-  }
-  const end = parseDate(catalog.campaign.ends_at);
-  if (!end) {
-    ui.campaign.classList.add('is-muted');
-    ui.campaign.textContent = 'Fecha de campaña no disponible';
-    return;
-  }
-  const ended = end.getTime() <= Date.now();
-  ui.campaign.classList.toggle('is-ended', ended);
-  ui.campaign.textContent = ended
-    ? `Campaña finalizada el ${formatDateTime(catalog.campaign.ends_at)}`
-    : `${catalog.campaign.name} · finaliza el ${formatDateTime(catalog.campaign.ends_at)}`;
+  ui.campaign.textContent = 'Campaña de práctica · stock limitado';
 }
 
 function renderCatalogError(): void {
@@ -552,6 +537,14 @@ function showToast(message: string, tone: ToastTone = 'info'): void {
     ui.toast.hidden = true;
     toastTimer = null;
   }, 3400);
+}
+
+function hideToast(): void {
+  if (toastTimer !== null) {
+    window.clearTimeout(toastTimer);
+    toastTimer = null;
+  }
+  ui.toast.hidden = true;
 }
 
 function openPanel(mode: PanelMode): void {
@@ -845,6 +838,7 @@ async function confirmOrder(): Promise<void> {
     return;
   }
   const attempt = ensureAttempt(items);
+  hideToast();
   creating = true;
   orderError = '';
   orderErrorCode = '';

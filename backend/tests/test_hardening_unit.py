@@ -1,9 +1,11 @@
-import asyncio
+﻿import asyncio
+import sys
 
 import httpx
+from fastapi.responses import JSONResponse
 from pydantic import SecretStr
 
-from app.config import Settings
+from app.config import Settings, get_settings
 from app.security import HardeningMiddleware
 
 
@@ -77,3 +79,52 @@ def test_ui_content_security_policy() -> None:
     assert "content-security-policy" in response.headers
     assert "default-src 'self'" in response.headers["content-security-policy"]
     assert "cache-control" not in response.headers
+
+
+def test_chunked_body_limit_through_fastapi(monkeypatch) -> None:
+    imported_here = "app.main" not in sys.modules
+    if imported_here:
+        monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@localhost:5432/flash")
+        monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/0")
+        monkeypatch.setenv("LAB_KEY", "l" * 40)
+        monkeypatch.setenv("FRONTEND_DIST", "missing-dist")
+        get_settings.cache_clear()
+
+    import app.main as main_module
+
+    invoked = False
+
+    @main_module.app.post("/api/v1/chunked-probe")
+    async def probe(payload: dict) -> JSONResponse:
+        nonlocal invoked
+        invoked = True
+        return JSONResponse({"ok": True, "payload": payload})
+
+    async def chunks():
+        for _ in range(0, main_module.settings.body_limit_bytes + 1024, 512):
+            yield b"x" * 512
+
+    captured = {}
+
+    async def capture(scope, receive, send):
+        captured["headers"] = scope["headers"]
+        await main_module.app(scope, receive, send)
+
+    async def scenario() -> httpx.Response:
+        transport = httpx.ASGITransport(app=capture)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            return await client.post("/api/v1/chunked-probe", content=chunks())
+
+    try:
+        response = asyncio.run(scenario())
+    finally:
+        if imported_here:
+            get_settings.cache_clear()
+            sys.modules.pop("app.main", None)
+
+    assert response.status_code == 413
+    assert response.json()["error"]["code"] == "PAYLOAD_TOO_LARGE"
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert invoked is False
+    assert all(name != b"content-length" for name, _ in captured["headers"])

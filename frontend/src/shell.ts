@@ -94,12 +94,12 @@ export function buildShell(): Elements {
       { class: 'hero-title', id: 'hero-title' },
       'Sonido claro.',
       el('br'),
-      'Stock real.'
+      'Tu próximo drop.'
     ),
     el(
       'p',
       { class: 'hero-text' },
-      'Drops pequeños de audio y escritorio. Precios en soles, stock real y una compra de demostración que termina en el servidor.'
+      'Audio y accesorios para tu escritorio. Explora el catálogo y prueba una compra sin cobros reales.'
     ),
     el(
       'div',
@@ -147,8 +147,7 @@ export function buildShell(): Elements {
         'div',
         { class: 'hero-caption-copy' },
         heroName,
-        el('div', { class: 'hero-price-row' }, heroPrice, heroOldPrice),
-        heroStock
+        el('div', { class: 'hero-price-row' }, heroPrice, heroOldPrice, heroStock)
       ),
       heroAdd
     )

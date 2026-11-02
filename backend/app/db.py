@@ -25,7 +25,7 @@ PRODUCT_SEED = [
     {
         "id": "nova-headphones",
         "name": "Nova Headphones",
-        "description": "Audifonos inalambricos con cancelacion activa y 32 horas de bateria.",
+        "description": "Audífonos inalámbricos con cancelación activa y 32 horas de batería.",
         "category": "Audio",
         "price_cents": 129900,
         "original_price_cents": 179900,
@@ -36,8 +36,8 @@ PRODUCT_SEED = [
     {
         "id": "orbit-keyboard",
         "name": "Orbit Keyboard",
-        "description": "Teclado mecanico compacto, switches lineales y conexion triple.",
-        "category": "Perifericos",
+        "description": "Teclado mecánico compacto, switches lineales y conexión triple.",
+        "category": "Periféricos",
         "price_cents": 89900,
         "original_price_cents": 109900,
         "stock": 35,
@@ -47,7 +47,7 @@ PRODUCT_SEED = [
     {
         "id": "pulse-speaker",
         "name": "Pulse Speaker",
-        "description": "Parlante portatil resistente al agua con sonido estereo.",
+        "description": "Parlante portátil resistente al agua con sonido estéreo.",
         "category": "Audio",
         "price_cents": 74900,
         "original_price_cents": 99900,
@@ -58,8 +58,8 @@ PRODUCT_SEED = [
     {
         "id": "arc-mouse",
         "name": "Arc Mouse",
-        "description": "Mouse ergonomico ultraligero con sensor de alta precision.",
-        "category": "Perifericos",
+        "description": "Mouse ergonómico ultraligero con sensor de alta precisión.",
+        "category": "Periféricos",
         "price_cents": 49900,
         "original_price_cents": 69900,
         "stock": 60,
@@ -80,7 +80,7 @@ PRODUCT_SEED = [
     {
         "id": "flux-hub",
         "name": "Flux Hub",
-        "description": "Hub USB-C de siete puertos con carga rapida y HDMI 4K.",
+        "description": "Hub USB-C de siete puertos con carga rápida y HDMI 4K.",
         "category": "Accesorios",
         "price_cents": 39900,
         "original_price_cents": 59900,
